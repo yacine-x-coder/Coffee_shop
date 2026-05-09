@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triple Pro Max Gold Portfolio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;700;900&family=Montserrat:wght@300;400;500;600&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #1b1208;
+  overflow-x: hidden;
+  color: #fff7ea;
+  font-family: 'Inter', sans-serif;
+  transition: direction 0.3s ease;
+}
+
+/* =========================
+   PERSISTENT BACKGROUND
+========================= */
+
+.bg {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: -10;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, #ffcc7060, transparent 30%),
+    radial-gradient(circle at bottom right, #d4a24c50, transparent 30%),
+    linear-gradient(135deg, #1b1208, #2c1b0f, #3a2414);
+  background-size: 400% 400%;
+  animation: bgMove 15s ease infinite;
+}
+
+@keyframes bgMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.grid {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(rgba(255,240,200,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,240,200,.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridMove 20s linear infinite;
+  transform: rotate(25deg);
+}
+
+@keyframes gridMove {
+  0%   { transform: rotate(25deg) translateY(0px); }
+  100% { transform: rotate(25deg) translateY(-120px); }
+}
+
+/* =========================
+   CURSOR
+========================= */
+
+.cursor {
+  width: 35px;
+  height: 35px;
+  border: 2px solid #ffd27a;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 99999;
+  box-shadow: 0 0 20px #ffd27a, 0 0 60px #ffb84d;
+  transition: transform 0.1s ease;
+}
+
+.cursor.active {
+  transform: translate(-50%, -50%) scale(1.5);
+  background: rgba(255, 210, 122, 0.2);
+}
+
+/* =========================
+   NAVBAR & LANGUAGE SWITCHER
+========================= */
+
+nav {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  padding: 25px 8%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  z-index: 999;
+}
+/*.logo-svg {
+  width: 45px;
+  height: 45px;
+  fill: #ffcf70;
+  filter: drop-shadow(0 0 10px #ffcf70);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+} */
+ .logo-img{
+    width:60px;
+    height:60px;
+    object-fit:contain;
+}
+
+.logo-svg:hover {
+  transform: scale(1.2) rotate(-10deg);
+  filter: drop-shadow(0 0 20px #ffcf70);
+}
+
+nav ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff5dc;
+  font-weight: 600;
+  position: relative;
+  transition: .4s;
+  cursor: pointer;
+}
+
+nav a:hover { color: #ffcf70; }
+
+/* Language Premium Button */
+.lang-btn {
+  background: rgba(212, 175, 55, 0.2);
+  border: 1px solid #d4af37;
+  color: #fff5dc;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-btn:hover { 
+  background: #d4af37;
+  color: #1b1208;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+}
+
+/* Premium Language Modal */
+.lang-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 5, 2, 0.85);
+  backdrop-filter: blur(15px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.lang-modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.lang-modal-content {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 40px;
+  border-radius: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  transform: translateY(50px) scale(0.9);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lang-modal-overlay.active .lang-modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.lang-modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  color: #ffcf70;
+  margin-bottom: 30px;
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.lang-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.lang-item:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: #d4af37;
+  transform: translateY(-5px);
+}
+
+.lang-item img {
+  width: 40px;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.lang-close {
+  margin-top: 30px;
+  background: none;
+  border: 1px solid #ffcf70;
+  color: #ffcf70;
+  padding: 10px 30px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.lang-close:hover { background: #ffcf70; color: #1b1208; }
+
+
+/* =========================
+   HERO — BARISTA LUXURY
+========================= */
+
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1920&auto=format&fit=crop') center/cover;
+  opacity: 0.15;
+  transform: scale(1.05);
+  animation: bgZoom 12s ease-in-out infinite alternate;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+}
+
+@keyframes bgZoom {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.15); }
+}
+
+/* Gold waves */
+.gold-wave {
+  position: absolute;
+  width: 1200px;
+  height: 1200px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,215,120,0.18);
+  top: -35%;
+  right: -20%;
+  animation: rotateWave 25s linear infinite;
+  filter: blur(1px);
+  z-index: 1;
+}
+
+.gold-wave.two {
+  width: 900px;
+  height: 900px;
+  top: -20%;
+  right: -10%;
+  animation-direction: reverse;
+  animation-duration: 18s;
+}
+
+.gold-wave.three {
+  width: 700px;
+  height: 700px;
+  top: 5%;
+  right: 5%;
+  animation-duration: 14s;
+}
+
+@keyframes rotateWave {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Coffee beans */
+.coffee-beans span {
+  position: absolute;
+  width: 18px;
+  height: 28px;
+  background: linear-gradient(to bottom, #7a4a2b, #2e1408);
+  border-radius: 50%;
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.1);
+  animation: floatBean linear infinite;
+  z-index: 2;
+}
+
+.coffee-beans span::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 80%;
+  background: rgba(255,255,255,0.15);
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+}
+
+.coffee-beans span:nth-child(1) { left: 12%; animation-duration: 10s; animation-delay: -1s; }
+.coffee-beans span:nth-child(2) { left: 28%; animation-duration: 14s; animation-delay: -3s; }
+.coffee-beans span:nth-child(3) { left: 46%; animation-duration: 11s; animation-delay: -5s; }
+.coffee-beans span:nth-child(4) { left: 67%; animation-duration: 16s; animation-delay: -2s; }
+.coffee-beans span:nth-child(5) { left: 82%; animation-duration: 13s; animation-delay: -6s; }
+
+@keyframes floatBean {
+  from { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  to   { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+}
+
+/* Particles */
+.particles span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d4af37;
+  opacity: 0.8;
+  animation: particleFloat 10s linear infinite;
+  z-index: 2;
+}
+
+@keyframes particleFloat {
+  from { transform: translateY(100vh) scale(0); opacity: 0; }
+  20%  { opacity: 1; }
+  to   { transform: translateY(-100vh) translateX(120px) scale(1.8); opacity: 0; }
+}
+
+/* Smoke */
+.smoke {
+  position: absolute;
+  bottom: 10%;
+  right: 18%;
+  width: 300px;
+  height: 500px;
+  z-index: 4;
+}
+
+.smoke span {
+  position: absolute;
+  bottom: 0;
+  width: 120px;
+  height: 120px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+  filter: blur(30px);
+  animation: smokeMove 8s linear infinite;
+}
+
+.smoke span:nth-child(2) { left: 60px;  animation-delay: 2s; }
+.smoke span:nth-child(3) { left: 120px; animation-delay: 4s; }
+
+@keyframes smokeMove {
+  0%   { transform: translateY(0) scale(0.8); opacity: 0; }
+  30%  { opacity: 0.5; }
+  100% { transform: translateY(-400px) translateX(60px) scale(2.5); opacity: 0; }
+}
+
+/* Cup glow */
+.cup-light {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  right: 8%;
+  bottom: -10%;
+  background: radial-gradient(circle, rgba(255,215,140,0.28), transparent 70%);
+  animation: pulseLight 4s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulseLight {
+  0%, 100% { transform: scale(1);   opacity: 0.7; }
+  50%       { transform: scale(1.1); opacity: 1; }
+}
+
+/* Hero center content */
+.center-content {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  left: 8%;
+  transform: translateY(-50%);
+  max-width: 700px;
+}
+
+.hero-subtitle {
+  color: #d4af37;
+  letter-spacing: 4px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  animation: fadeUp 1.5s ease both;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.hero-main-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(50px, 8vh, 95px);
+  line-height: 0.95;
+  color: #f8f3e8;
+  text-shadow: 0 0 25px rgba(212,175,55,0.15);
+  animation: fadeUp 1.8s ease both;
+}
+
+.word { display: inline-block; opacity: 0; }
+
+.hero-desc {
+  margin-top: 18px;
+  color: #d8cfc2;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 580px;
+  animation: fadeUp 2s ease both;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.hero-btns {
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  animation: fadeUp 2.2s ease both;
+}
+
+@keyframes fadeUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+  padding: 18px 45px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #ffcf70, #b87a2d, #ffe7a3);
+  color: #2c1b0f;
+  transition: .4s;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ffcf70, 0 0 40px #ffcf70;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.portfolio-section { padding: 140px 10%; }
+
+.section-title {
+  font-size: 4rem;
+  margin-bottom: 60px;
+  font-weight: 900;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #fff4d0, #ffcf70, #b87a2d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleGlow 4s infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { filter: drop-shadow(0 0 10px #ffcf70); }
+  to   { filter: drop-shadow(0 0 30px #ffcf70); }
+}
+
+/* For GSAP Reveal globally */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+/* =========================
+   CARDS & 3D TILT
+========================= */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+}
+
+.card {
+  background: rgba(255,240,210,.05);
+  border: 1px solid rgba(255,220,160,.2);
+  padding: 40px;
+  border-radius: 30px;
+  backdrop-filter: blur(25px);
+  position: relative;
+  overflow: hidden;
+  transition: 0.15s ease-out; 
+}
+
+.card h3 { font-size: 2rem; margin-bottom: 20px; color: #fff2cc; }
+.card p { line-height: 1.9; color: #f3d8a7; }
+
+/* =========================
+   MENU SECTION (WITH IMAGES, NO PRICES)
+========================= */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.menu-card {
+  background: rgba(44, 27, 15, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.4s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #ffcf70;
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.menu-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.menu-card:hover .menu-img {
+  transform: scale(1.05);
+}
+
+.menu-info {
+  padding: 30px;
+}
+
+.menu-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: #ffcf70;
+  margin-bottom: 10px;
+}
+
+.menu-info p {
+  font-size: 1rem;
+  color: #d8cfc2;
+  line-height: 1.5;
+}
+
+/* =========================
+   SKILLS
+========================= */
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.skill-tag {
+  padding: 18px 35px;
+  border-radius: 50px;
+  background: rgba(255,230,180,.08);
+  border: 1px solid rgba(255,220,160,.2);
+  font-weight: 800;
+  color: #fff5dc;
+  transition: .4s;
+  cursor: default;
+}
+
+.skill-tag:hover {
+  background: #ffcf70;
+  color: #2c1b0f;
+  transform: translateY(-10px) scale(1.1);
+  box-shadow: 0 0 30px #ffcf70;
+}
+
+/* =========================
+   CONTACT
+========================= */
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 700px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 22px;
+  border-radius: 25px;
+  background: rgba(255,245,220,.05);
+  border: 1px solid rgba(255,220,160,0.2);
+  color: #fff;
+  outline: none;
+  transition: 0.3s;
+}
+
+.contact-form input:focus { border-color: #ffcf70; }
+
+footer {
+  padding: 50px;
+  text-align: center;
+  color: #d8b98a;
+  border-top: 1px solid rgba(255,220,160,.15);
+}
+
+/* =========================
+   AI CHAT SYSTEM
+========================= */
+
+.chat-widget {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+}
+
+/* .chat-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #ffcf70, #b87a2d);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+  animation: pulseChat 2s infinite;
+  transition: transform 0.3s;
+}
+  .chat-icon{
+    width:35px;
+    height:35px;
+    object-fit:contain;
+} */
+ .chat-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #ffcf70, #b87a2d);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+  animation: pulseChat 2s infinite;
+  transition: transform 0.3s;
+} 
+.chat-icon img{
+    width:30px;
+    height:30px;
+    object-fit:contain;
+}
+
+
+.chat-trigger:hover {
+  transform: scale(1.1);
+}
+
+@keyframes pulseChat {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 207, 112, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 207, 112, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 207, 112, 0); }
+}
+
+/* .chat-trigger svg {
+  width: 40px;
+  fill: #1b1208;
+} */
+
+.chat-window {
+  position: fixed;
+  inset: 5%;
+  background: rgba(15, 10, 5, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 30px;
+  z-index: 10001;
+  display: none;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(50px) scale(0.95);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+}
+
+.chat-header {
+  padding: 25px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.chat-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: #ffcf70;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-title span {
+  width: 10px;
+  height: 10px;
+  background: #00ff00;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+.chat-controls {
+  display: flex;
+  gap: 15px;
+}
+
+.control-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #ffcf70;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: 0.3s;
+}
+
+.control-btn:hover { background: rgba(212,175,55,0.2); }
+.control-btn.close:hover { background: rgba(255, 68, 68, 0.2); color: #ff4444; border-color: #ff4444; }
+
+.chat-body {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.ai-msg {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+  padding: 25px;
+  border-radius: 20px;
+  max-width: 85%;
+  align-self: flex-start;
+  border-left: 4px solid #d4af37;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #fff7ea;
+}
+
+.suggested-qs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: auto;
+}
+
+.sq-item {
+  padding: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(0,0,0,0.3);
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #d8cfc2;
+}
+
+.sq-item:hover {
+  background: #d4af37;
+  color: #1b1208;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+}
+
+/* Chat Input Area */
+.chat-input-area {
+  padding: 25px 40px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  gap: 20px;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 20px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: #fff;
+  font-size: 1.1rem;
+  outline: none;
+}
+.chat-input-area input:focus { border-color: #ffcf70; }
+.chat-send-btn { background: #d4af37; border: none; padding: 0 30px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #1b1208; }
+
+/* Confirm Dialog (Luxurious) */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  backdrop-filter: blur(20px);
+  z-index: 10002;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.confirm-box {
+  background: #110a05;
+  border: 1px solid #ff4444;
+  padding: 50px;
+  border-radius: 30px;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 0 50px rgba(255, 68, 68, 0.1);
+  transform: scale(0.9);
+}
+
+.confirm-box h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #ffcf70;
+}
+
+.confirm-box p { color: #d8cfc2; line-height: 1.8; margin-bottom: 30px; }
+
+.confirm-btns {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.confirm-btns button {
+  padding: 15px 40px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.btn-danger { background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid #ff4444; }
+.btn-danger:hover { background: #ff4444; color: white; box-shadow: 0 0 20px #ff4444; }
+.btn-safe { background: #d4af37; color: #1b1208; }
+.btn-safe:hover { background: #ffcf70; box-shadow: 0 0 20px #ffcf70; }
+
+/* RTL Support */
+[lang="ar"] { direction: rtl; text-align: right; }
+[lang="ar"] .center-content { left: auto; right: 8%; }
+[lang="ar"] nav ul { gap: 20px; }
+[lang="ar"] .ai-msg { border-left: none; border-right: 4px solid #d4af37; }
+
+</style>
+</head>
+<body id="main-body">
+
+<div class="bg"><div class="grid"></div></div>
+<div class="cursor" id="cursor"></div>
+
+<div class="lang-modal-overlay" id="langModal">
+  <div class="lang-modal-content">
+    <h2 class="lang-modal-title">Select Your Preference</h2>
+    <div class="lang-grid">
+      <div class="lang-item" onclick="changeLang('en')">
+        <img src="https://flagcdn.com/w80/us.png" alt="EN">
+        <span>English</span>
+      </div>
+      <div class="lang-item" onclick="changeLang('ar')">
+        <img src="https://flagcdn.com/w80/sa.png" alt="AR">
+        <span>العربية</span>
+      </div>
+      <div class="lang-item" onclick="changeLang('fr')">
+        <img src="https://flagcdn.com/w80/fr.png" alt="FR">
+        <span>Français</span>
+      </div>
+      <div class="lang-item" onclick="changeLang('es')">
+        <img src="https://flagcdn.com/w80/es.png" alt="ES">
+        <span>Español</span>
+      </div>
+      <div class="lang-item" onclick="changeLang('zh')">
+        <img src="https://flagcdn.com/w80/cn.png" alt="ZH">
+        <span>中文</span>
+      </div>
+      <div class="lang-item" onclick="changeLang('hi')">
+        <img src="https://flagcdn.com/w80/in.png" alt="HI">
+        <span>हिन्दी</span>
+      </div>
+    </div>
+    <button class="lang-close" onclick="closeLangModal()">Close</button>
+  </div>
+</div>
+
+<nav>
+<div class="logo">
+  <img src="images/coffee.png" alt="Logo" class="logo-img">
+</div>
+  <ul>
+    <li><a href="#about" class="nav-text" data-key="nav-about">About</a></li>
+    <li><a href="#menu" class="nav-text" data-key="nav-menu">Menu</a></li>
+    <li><a href="#projects" class="nav-text" data-key="nav-projects">Projects</a></li>
+    <li><a href="#skills" class="nav-text" data-key="nav-skills">Skills</a></li>
+    <li><a href="#contact" class="nav-text" data-key="nav-contact">Contact</a></li>
+    <li>
+      <button class="lang-btn" onclick="openLangModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span id="current-lang-text">Language</span>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="gold-wave"></div>
+  <div class="gold-wave two"></div>
+  <div class="gold-wave three"></div>
+  <div class="coffee-beans">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="particles">
+    <span style="left:10%; animation-duration:8s;"></span>
+    <span style="left:60%; animation-duration:13s;"></span>
+  </div>
+  <div class="smoke"><span></span><span></span><span></span></div>
+  <div class="cup-light"></div>
+
+  <div class="center-content">
+    <div class="hero-subtitle gsap-reveal" data-key="h-sub">BARISTA COACH &amp; COFFEE EXPERT</div>
+    <h1 class="hero-main-title gsap-reveal" id="main-title">Luxury<br>Coffee<br>Experience</h1>
+    <p class="hero-desc gsap-reveal" data-key="h-desc">
+      The most futuristic portfolio ever created — smooth animations, 
+      3D movement, and premium gold UI.
+    </p>
+    <div class="hero-btns gsap-reveal">
+      <a href="#about" class="btn" data-key="btn-explore">Explore</a>
+      <a href="#menu" class="btn" data-key="btn-menu">View Menu</a>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio-section" id="projects">
+  <h2 class="section-title gsap-reveal" data-key="t-projects">Projects</h2>
+  <div class="cards">
+    <div class="card gsap-reveal">
+      <h3 data-key="p1-t">AI Website</h3>
+      <p data-key="p1-p">Interactive AI landing page with ultra smooth animations.</p>
+    </div>
+    <div class="card gsap-reveal">
+      <h3 data-key="p2-t">Cyber Dashboard</h3>
+      <p data-key="p2-p">Premium dashboard with glassmorphism and live effects.</p>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio-section" id="skills">
+  <h2 class="section-title gsap-reveal" data-key="t-skills">Skills</h2>
+  <div class="skills-grid gsap-reveal">
+    <div class="skill-tag">JavaScript</div>
+    <div class="skill-tag">GSAP</div>
+    <div class="skill-tag">React</div>
+    <div class="skill-tag">Three.js</div>
+    <div class="skill-tag">UI/UX</div>
+  </div>
+</section>
+
+<section class="portfolio-section" id="about">
+  <h2 class="section-title gsap-reveal" data-key="t-about">About Me</h2>
+  <div class="cards">
+    <div class="card gsap-reveal">
+      <h3 data-key="c1-t">Creative UI</h3>
+      <p data-key="c1-p">Advanced futuristic interfaces with cinematic animation effects.</p>
+    </div>
+    <div class="card gsap-reveal">
+      <h3 data-key="c2-t">Frontend</h3>
+      <p data-key="c2-p">Expert in GSAP, React, and Three.js interactions.</p>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio-section" id="menu">
+  <h2 class="section-title gsap-reveal" data-key="t-menu">Our Menu</h2>
+  <div class="menu-grid">
+    <div class="menu-card gsap-reveal">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600" class="menu-img">
+      <div class="menu-info">
+        <h4 data-key="m1-t">Espresso Gold</h4>
+        <p data-key="m1-p">Pure intensity with gold flakes.</p>
+      </div>
+    </div>
+    <div class="menu-card gsap-reveal">
+      <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?q=80&w=1200&auto=format&fit=crop" class="menu-img">
+      <div class="menu-info">
+        <h4 data-key="m2-t">Royal Latte</h4>
+        <p data-key="m2-p">Creamy texture with premium beans.</p>
+      </div>
+    </div>
+    <div class="menu-card gsap-reveal">
+      <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600" class="menu-img">
+      <div class="menu-info">
+        <h4 data-key="m3-t">Future Brew</h4>
+        <p data-key="m3-p">Cold brew infused with nitrogen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio-section" id="contact">
+  <h2 class="section-title gsap-reveal" data-key="t-contact">Contact</h2>
+  <form class="contact-form gsap-reveal">
+    <input type="text" placeholder="Your Name" data-key="ph-name">
+    <input type="email" placeholder="Your Email" data-key="ph-email">
+    <textarea placeholder="Your Message" data-key="ph-msg"></textarea>
+    <button class="btn" type="submit" data-key="btn-send">Send Message</button>
+  </form>
+</section>
+
+<footer id="footer-text" class="gsap-reveal">&copy; 2026 By Yacine</footer>
+
+<div class="chat-widget">
+  <div class="chat-trigger" onclick="openChat()">
+    <img src="images/chat.png" alt="Chat Icon" class="chat-icon">
+  </div>
+</div>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-title"><span></span> Coffee AI</div>
+    <div class="chat-controls">
+      <button class="control-btn" onclick="minChat()">—</button>
+      <button class="control-btn close" onclick="requestCloseChat()">✕</button>
+    </div>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="ai-msg" id="chat-welcome">Welcome to the premium experience. I am the AI assistant. How can I elevate your journey today?</div>
+    <div class="suggested-qs" id="chat-sqs">
+      <div class="sq-item" onclick="sendMsg('Tell me about the Gold Portfolio.')">Tell me about the Gold Portfolio.</div>
+      <div class="sq-item" onclick="sendMsg('How do I book a consultation?')">How do I book a consultation?</div>
+      <div class="sq-item" onclick="sendMsg('What are the secret menu items?')">What are the secret menu items?</div>
+      <div class="sq-item" onclick="sendMsg('Are you a real AI?')">Are you a real AI?</div>
+      <div class="sq-item" onclick="sendMsg('Explain the 3D animations.')">Explain the 3D animations.</div>
+      <div class="sq-item" onclick="sendMsg('I want to hire Yacine.')">I want to hire Yacine.</div>
+      <div class="sq-item" onclick="sendMsg('What coffee beans do you use?')">What coffee beans do you use?</div>
+      <div class="sq-item" onclick="sendMsg('Do you provide source code?')">Do you provide source code?</div>
+      <div class="sq-item" onclick="sendMsg('Who designed this UI?')">Who designed this UI?</div>
+      <div class="sq-item" onclick="sendMsg('Connect me to human support.')">Connect me to human support.</div>
+    </div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" placeholder="Type your message to AI..." id="chatInput">
+    <button class="chat-send-btn" onclick="sendCustomMsg()">Send</button>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Memory Wipe Protocol Initiated</h3>
+    <p>Are you absolutely certain you wish to terminate this connection and permanently erase our neural conversation history? This action is irreversible.</p>
+    <div class="confirm-btns">
+      <button class="btn-safe" onclick="cancelClose()">Keep Connection</button>
+      <button class="btn-danger" onclick="confirmClose()">Erase Memory</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== GLOBAL INTERACTION & CURSOR ===== */
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', (e) => {
+  gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
+});
+
+document.querySelectorAll('a, button, .menu-card, .card, .sq-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+});
+
+/* ===== GSAP SCROLL REVEAL ===== */
+gsap.registerPlugin(ScrollTrigger);
+
+document.querySelectorAll('.gsap-reveal').forEach((el) => {
+  gsap.to(el, {
+    scrollTrigger: {
+      trigger: el,
+      start: "top 85%",
+      toggleActions: "play none none reverse"
+    },
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    ease: "power4.out"
+  });
+});
+
+/* ===== 3D CARD TILT ===== */
+document.querySelectorAll('.card, .menu-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotateY = ((x / rect.width) - 0.5) * -20;
+    const rotateX = ((y / rect.height) - 0.5) * 20;
+    gsap.to(card, {
+      rotateX: rotateX,
+      rotateY: rotateY,
+      scale: 1.02,
+      duration: 0.5,
+      ease: "power2.out",
+      transformPerspective: 1000
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    gsap.to(card, {
+      rotateX: 0,
+      rotateY: 0,
+      scale: 1,
+      duration: 0.8,
+      ease: "elastic.out(1, 0.5)"
+    });
+  });
+});
+
+/* ===== TEXT REVEAL (HERO TITLE) ===== */
+const titleEl = document.getElementById('main-title');
+function initHeroText() {
+  const text = titleEl.innerHTML;
+  titleEl.innerHTML = text.split('<br>').map(line => 
+    `<div>${line.split(' ').map(word => `<span class="word">${word}</span>`).join(' ')}</div>`
+  ).join('');
+
+  gsap.fromTo(".word", 
+    { opacity: 0, y: 30, display: 'inline-block' },
+    { opacity: 1, y: 0, stagger: 0.1, duration: 1.2, ease: "back.out(1.7)" }
+  );
+}
+initHeroText();
+
+/* ===== PREMIUM MULTI-LANGUAGE SYSTEM ===== */
+const translations = {
+  en: {
+    "nav-about": "About", "nav-menu": "Menu", "nav-projects": "Projects", "nav-skills": "Skills", "nav-contact": "Contact",
+    "h-sub": "BARISTA COACH & COFFEE EXPERT", "h-desc": "The most futuristic portfolio ever created — smooth animations, 3D movement, and premium gold UI.",
+    "btn-explore": "Explore", "btn-menu": "View Menu", "t-about": "About Me", "c1-t": "Creative UI", "c1-p": "Advanced futuristic interfaces with cinematic animation effects.",
+    "c2-t": "Frontend", "c2-p": "Expert in GSAP, React, and Three.js interactions.", "t-menu": "Our Menu", "t-projects": "Projects", "p1-t": "AI Website",
+    "p1-p": "Interactive AI landing page with ultra smooth animations.", "p2-t": "Cyber Dashboard", "p2-p": "Premium dashboard with glassmorphism and live effects.",
+    "t-skills": "Skills", "t-contact": "Contact", "ph-name": "Your Name", "ph-email": "Your Email", "ph-msg": "Your Message", "btn-send": "Send Message",
+    "m1-t": "Espresso Gold", "m1-p": "Pure intensity with gold flakes.", "m2-t": "Royal Latte", "m2-p": "Creamy texture with premium beans.", "m3-t": "Future Brew", "m3-p": "Cold brew infused with nitrogen.",
+    "chat-w": "Welcome to the premium experience. I am the AI assistant. How can I elevate your journey today?"
+  },
+  ar: {
+    "nav-about": "من نحن", "nav-menu": "المنيو", "nav-projects": "مشاريعي", "nav-skills": "مهاراتي", "nav-contact": "تواصل",
+    "h-sub": "مدرب باريستا وخبير قهوة", "h-desc": "أكثر بورتفوليو مستقبلي تم إنشاؤه على الإطلاق - حركات ناعمة، أبعاد ثلاثية وتصميم ذهبي فاخر.",
+    "btn-explore": "استكشف", "btn-menu": "قائمة الطعام", "t-about": "عني", "c1-t": "واجهات إبداعية", "c1-p": "واجهات مستقبلية متطورة مع تأثيرات سينمائية.",
+    "c2-t": "فرونت إند", "c2-p": "خبير في تفاعلات GSAP و React و Three.js.", "t-menu": "قائمة الطعام", "t-projects": "المشاريع", "p1-t": "موقع ذكاء اصطناعي",
+    "p1-p": "صفحة هبوط تفاعلية مع حركات فائقة النعومة.", "p2-t": "لوحة تحكم سيبرانية", "p2-p": "لوحة تحكم فاخرة بتأثيرات زجاجية حية.",
+    "t-skills": "المهارات", "t-contact": "اتصل بنا", "ph-name": "اسمك الكامل", "ph-email": "بريدك الإلكتروني", "ph-msg": "رسالتك", "btn-send": "إرسال الرسالة الفخمة",
+    "m1-t": "إسبريسو ذهبي", "m1-p": "كثافة نقية مع رقائق الذهب الخالصة.", "m2-t": "لاتيه ملكي", "m2-p": "قوام كريمي مع حبوب القهوة الفاخرة.", "m3-t": "مشروب المستقبل", "m3-p": "مشروب بارد معزز بالنيتروجين.",
+    "chat-w": "مرحباً بك في التجربة الفاخرة. أنا المساعد الذكي. كيف يمكنني الارتقاء بيومك؟"
+  },
+  fr: {
+    "nav-about": "À Propos", "nav-menu": "Menu", "nav-projects": "Projets", "nav-skills": "Compétences", "nav-contact": "Contact",
+    "h-sub": "COACH BARISTA & EXPERT", "h-desc": "Le portfolio le plus futuriste jamais créé - animations fluides et UI dorée premium.",
+    "btn-explore": "Explorer", "btn-menu": "Voir Menu", "t-about": "À Propos", "c1-t": "UI Créative", "c1-p": "Interfaces futuristes avancées avec animations.",
+    "c2-t": "Frontend", "c2-p": "Expert en GSAP, React et Three.js.", "t-menu": "Notre Menu", "t-projects": "Projets", "p1-t": "Site Web IA",
+    "p1-p": "Page d'atterrissage IA interactive ultra fluide.", "p2-t": "Dashboard Cyber", "p2-p": "Tableau de bord premium avec effets en direct.",
+    "t-skills": "Compétences", "t-contact": "Contact", "ph-name": "Votre Nom", "ph-email": "Votre Email", "ph-msg": "Votre Message", "btn-send": "Envoyer",
+    "m1-t": "Espresso Or", "m1-p": "Intensité pure aux flocons d'or.", "m2-t": "Latte Royal", "m2-p": "Texture crémeuse aux grains premium.", "m3-t": "Infusion Future", "m3-p": "Infusion à froid infusée à l'azote.",
+    "chat-w": "Bienvenue dans l'expérience premium. Je suis l'IA. Comment puis-je vous aider ?"
+  },
+  es: {
+    "nav-about": "Sobre Mí", "nav-menu": "Menú", "nav-projects": "Proyectos", "nav-skills": "Habilidades", "nav-contact": "Contacto",
+    "h-sub": "COACH BARISTA & EXPERTO", "h-desc": "El portafolio más futurista jamás creado: animaciones fluidas y diseño dorado premium.",
+    "btn-explore": "Explorar", "btn-menu": "Ver Menú", "t-about": "Sobre Mí", "c1-t": "UI Creativa", "c1-p": "Interfaces futuristas avanzadas.",
+    "c2-t": "Frontend", "c2-p": "Experto en interacciones GSAP, React y Three.js.", "t-menu": "Nuestro Menú", "t-projects": "Proyectos", "p1-t": "Sitio Web IA",
+    "p1-p": "Página de aterrizaje IA interactiva.", "p2-t": "Dashboard Cyber", "p2-p": "Panel premium con efectos de cristal.",
+    "t-skills": "Habilidades", "t-contact": "Contacto", "ph-name": "Tu Nombre", "ph-email": "Tu Correo", "ph-msg": "Tu Mensaje", "btn-send": "Enviar Mensaje",
+    "m1-t": "Espresso Oro", "m1-p": "Intensidad pura con copos de oro.", "m2-t": "Latte Real", "m2-p": "Textura cremosa con granos premium.", "m3-t": "Brebaje Futuro", "m3-p": "Infusión fría con nitrógeno.",
+    "chat-w": "Bienvenido a la experiencia premium. Soy la IA asistente."
+  },
+  zh: {
+    "nav-about": "关于", "nav-menu": "菜单", "nav-projects": "项目", "nav-skills": "技能", "nav-contact": "联系",
+    "h-sub": "咖啡师教练与专家", "h-desc": "有史以来最具未来感的作品集 — 流畅的动画和高端金色界面。",
+    "btn-explore": "探索", "btn-menu": "查看菜单", "t-about": "关于我", "c1-t": "创意UI", "c1-p": "高级未来派界面和电影级动画。",
+    "c2-t": "前端", "c2-p": "GSAP、React和Three.js交互专家。", "t-menu": "我们的菜单", "t-projects": "项目", "p1-t": "AI网站",
+    "p1-p": "具有超流畅动画的交互式AI登录页面。", "p2-t": "网络仪表板", "p2-p": "具有玻璃光泽和实时效果的高级仪表板。",
+    "t-skills": "技能", "t-contact": "联系", "ph-name": "你的名字", "ph-email": "你的邮箱", "ph-msg": "你的留言", "btn-send": "发送消息",
+    "m1-t": "黄金浓缩", "m1-p": "带有金箔的纯正强度。", "m2-t": "皇家拿铁", "m2-p": "使用高级咖啡豆的乳状质地。", "m3-t": "未来酿造", "m3-p": "注入氮气的冷萃咖啡。",
+    "chat-w": "欢迎体验尊贵服务。我是AI助手。今天能为您做些什么？"
+  },
+  hi: {
+    "nav-about": "के बारे में", "nav-menu": "मेनू", "nav-projects": "परियोजनाएं", "nav-skills": "कौशल", "nav-contact": "संपर्क",
+    "h-sub": "बरिस्ता कोच और कॉफी विशेषज्ञ", "h-desc": "अब तक का सबसे भविष्यवादी पोर्टफोलियो - सहज एनिमेशन और प्रीमियम गोल्ड यूआई।",
+    "btn-explore": "अन्वेषण", "btn-menu": "मेनू देखें", "t-about": "मेरे बारे में", "c1-t": "क्रिएटिव यूआई", "c1-p": "उन्नत भविष्यवादी इंटरफेस।",
+    "c2-t": "फ्रंटएंड", "c2-p": "GSAP और React में विशेषज्ञ।", "t-menu": "हमारा मेनू", "t-projects": "परियोजनाएं", "p1-t": "एआई वेबसाइट",
+    "p1-p": "इंटरएक्टिव एआई लैंडिंग पेज।", "p2-t": "साइबर डैशबोर्ड", "p2-p": "ग्लासमॉर्फिज़्म के साथ प्रीमियम डैशबोर्ड।",
+    "t-skills": "कौशल", "t-contact": "संपर्क", "ph-name": "आपका नाम", "ph-email": "आपका ईमेल", "ph-msg": "आपका संदेश", "btn-send": "संदेश भेजें",
+    "m1-t": "एस्प्रेसो गोल्ड", "m1-p": "सोने के टुकड़ों के साथ शुद्ध तीव्रता।", "m2-t": "रॉयल लट्टे", "m2-p": "प्रीमियम बीन्स के साथ मलाईदार बनावट।", "m3-t": "फ्यूचर ब्रू", "m3-p": "नाइट्रोजन युक्त कोल्ड ब्रू।",
+    "chat-w": "प्रीमियम अनुभव में आपका स्वागत है। मैं एआई सहायक हूँ।"
+  }
+};
+
+function openLangModal() {
+  const modal = document.getElementById('langModal');
+  modal.classList.add('active');
+}
+
+function closeLangModal() {
+  document.getElementById('langModal').classList.remove('active');
+}
+
+function changeLang(lang) {
+  const body = document.getElementById('main-body');
+  body.setAttribute('lang', lang);
+  
+  const langNames = { en: 'English', ar: 'العربية', fr: 'Français', es: 'Español', zh: '中文', hi: 'हिन्दी' };
+  document.getElementById('current-lang-text').innerText = langNames[lang];
+
+  // Translation mapping
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.getAttribute('data-key');
+    if (translations[lang] && translations[lang][key]) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = translations[lang][key];
+      } else {
+        el.innerText = translations[lang][key];
+      }
+    }
+  });
+
+  // Handle Title Br tags
+  if(lang === 'ar') {
+    titleEl.innerHTML = "تجربة<br>قهوة<br>ملكية";
+    document.getElementById('footer-text').innerText = "© 2026 بواسطة ياسين";
+    document.querySelector('.confirm-box h3').innerText = "بروتوكول مسح الذاكرة";
+    document.querySelector('.confirm-box p').innerText = "هل أنت متأكد تماماً من رغبتك في إنهاء الاتصال ومسح تاريخ المحادثة العصبية نهائياً؟ هذا الإجراء لا يمكن التراجع عنه.";
+    document.querySelector('.btn-safe').innerText = "إبقاء الاتصال";
+    document.querySelector('.btn-danger').innerText = "مسح الذاكرة";
+  } else {
+    titleEl.innerHTML = "Luxury<br>Coffee<br>Experience";
+    document.getElementById('footer-text').innerText = "© 2026 By Yacine";
+    document.querySelector('.confirm-box h3').innerText = "Memory Wipe Protocol Initiated";
+    document.querySelector('.confirm-box p').innerText = "Are you absolutely certain you wish to terminate this connection and permanently erase our neural conversation history? This action is irreversible.";
+    document.querySelector('.btn-safe').innerText = "Keep Connection";
+    document.querySelector('.btn-danger').innerText = "Erase Memory";
+  }
+  
+  if(translations[lang] && translations[lang]['chat-w']) {
+     document.getElementById('chat-welcome').innerText = translations[lang]['chat-w'];
+  }
+
+  // Cinematic Re-Animation
+  closeLangModal();
+  initHeroText();
+  gsap.fromTo("[data-key]:not(.hero-main-title)", 
+    { opacity: 0, scale: 0.95 },
+    { opacity: 1, scale: 1, stagger: 0.05, duration: 0.8, ease: "power3.out" }
+  );
+}
+
+/* ===== PREMIUM AI CHAT LOGIC ===== */
+const chatWindow = document.getElementById('chatWindow');
+const confirmOverlay = document.getElementById('confirmOverlay');
+
+function openChat() {
+  chatWindow.style.display = 'flex';
+  gsap.to(chatWindow, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "expo.out" });
+}
+
+function minChat() {
+  gsap.to(chatWindow, { opacity: 0, y: 50, scale: 0.95, duration: 0.4, ease: "power2.in", onComplete: () => {
+    chatWindow.style.display = 'none';
+  }});
+}
+
+function requestCloseChat() {
+  confirmOverlay.style.display = 'flex';
+  gsap.to(confirmOverlay, { opacity: 1, duration: 0.3 });
+  gsap.to('.confirm-box', { scale: 1, duration: 0.4, ease: "back.out(1.5)" });
+}
+
+function cancelClose() {
+  gsap.to('.confirm-box', { scale: 0.9, duration: 0.3 });
+  gsap.to(confirmOverlay, { opacity: 0, duration: 0.3, onComplete: () => {
+    confirmOverlay.style.display = 'none';
+  }});
+}
+
+function confirmClose() {
+  // Wipe Memory Action
+  const body = document.getElementById('chatBody');
+  const initialWelcome = document.getElementById('chat-welcome').outerHTML;
+  const initialSqs = document.getElementById('chat-sqs').outerHTML;
+  
+  gsap.to(chatWindow, { opacity: 0, scale: 0.8, duration: 0.5, onComplete: () => {
+    chatWindow.style.display = 'none';
+    body.innerHTML = initialWelcome + initialSqs; // Reset chat
+    cancelClose();
+  }});
+}
+
+function sendMsg(text) {
+  addMsgToChat(text, 'user');
+  document.getElementById('chat-sqs').style.display = 'none'; // hide suggestions
+  
+  // Fake AI Thinking
+  setTimeout(() => {
+    addMsgToChat("Processing your neural request: '" + text + "'. I am calculating the optimal path to deliver the best luxury experience. Yacine's systems have been alerted.", 'ai');
+  }, 1000);
+}
+
+function sendCustomMsg() {
+  const input = document.getElementById('chatInput');
+  if(input.value.trim() !== '') {
+    sendMsg(input.value);
+    input.value = '';
+  }
+}
+
+function addMsgToChat(text, sender) {
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = 'ai-msg';
+  
+  if(sender === 'user') {
+    div.style.background = 'rgba(255,255,255,0.05)';
+    div.style.alignSelf = 'flex-end';
+    div.style.borderLeft = 'none';
+    div.style.borderRight = '4px solid #fff';
+    div.style.color = '#fff';
+  }
+  
+  div.innerText = text;
+  body.appendChild(div);
+  
+  // Animate new message
+  gsap.fromTo(div, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
+  body.scrollTop = body.scrollHeight;
+}
+</script>
+
+</body>
+</html>
